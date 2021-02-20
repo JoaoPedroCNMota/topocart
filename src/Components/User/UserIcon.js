@@ -11,7 +11,7 @@ import {
   ListItemText,
 } from "@material-ui/core";
 
-import SettingsIcon from "@material-ui/icons/Settings";
+import ConfigModal from "./ConfigModal";
 import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
@@ -79,12 +79,7 @@ const UserIcon = () => {
                     id="menu-list-grow"
                     onKeyDown={handleListKeyDown}
                   >
-                    <MenuItem onClick={handleClose}>
-                      <ListItemIcon>
-                        <SettingsIcon fontSize="large" />
-                      </ListItemIcon>
-                      <ListItemText primary="Configurações" />
-                    </MenuItem>
+                    <ConfigModal />
                     <MenuItem onClick={handleClose}>
                       <ListItemIcon>
                         <ExitToAppIcon fontSize="large" />
