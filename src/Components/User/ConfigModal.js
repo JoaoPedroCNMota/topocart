@@ -22,7 +22,7 @@ import {
   Switch,
 } from "@material-ui/core";
 import SettingsIcon from "@material-ui/icons/Settings";
-import configFormReducer from "../../utils/configFormReducer";
+import { getConfigs, postConfigs } from '../../services/user'
 
 const useStyles = makeStyles((theme) => ({
   dialogHeader: {
@@ -43,12 +43,19 @@ const useStyles = makeStyles((theme) => ({
 
 const ConfigModal = () => {
   const style = useStyles();
+  const theme = useTheme();
 
   const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [formData, setFormData] = React.useReducer(configFormReducer, {});
+  const [config, setConfig] = React.useState({})
+
+  React.useEffect(() => {
+    //passar identificação do cliente
+    // getConfigs(id_usuario) 
+    //   .then((resp) => setConfig(resp.data))
+    //   .catch((err) => alert("erro ao buscar configurações do cliente " + err))
+  }, [])
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -59,22 +66,22 @@ const ConfigModal = () => {
   };
 
   const setConfiguracaoPadrao = () => {
-    setFormData({
-      reset: true
+    setConfig({
+      fontSize: '14px',
+      tema: false,
+      grade: 'flutuante'
     })
   };
 
-  const handleChange = (event) => {
-    const isCheckbox = event.target.type === "checkbox";
-    setFormData({
-      name: event.target.name,
-      value: isCheckbox ? event.target.checked : event.target.value,
-    });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(">>>>>>>>SUBMIT");
+  const enviarConfiguracoes = (e) => {
+    e.preventDefault();
+    handleClose();
+    // postConfigs(id_usuario, config)
+    //   .then((resp) => {
+    //     alert("configuração enviada com sucesso")
+    //   })
+    //   .catch((err) => alert("erro ao enviar configuração " + err))
+    alert("definiu configuração")
   };
 
   return (
@@ -108,8 +115,8 @@ const ConfigModal = () => {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                onChange={handleChange}
-                value={formData.fontsize || ""}
+                onChange={(e) => setConfig({ ...config, fontSize: e.target.value })}
+                value={config.fontSize}
               />
               <FormControlLabel
                 className={style.marginZero}
@@ -119,12 +126,12 @@ const ConfigModal = () => {
                   <Switch
                     name="tema"
                     color="primary"
-                    checked={formData.tema || false}
-                    onChange={handleChange}
+                    checked={config.tema || false}
+                    onChange={(e) => setConfig({ ...config, tema: !config.tema })}
                   />
                 }
               />
-              <FormControl component="fieldset" fullWidth style={{marginBottom:150}}>
+              <FormControl component="fieldset" fullWidth style={{ marginBottom: 150 }}>
                 <FormLabel component="legend">
                   Posição Inicial da Grade
                 </FormLabel>
@@ -133,44 +140,36 @@ const ConfigModal = () => {
                   aria-label="grade"
                   name="grade"
                   defaultValue="flutuante"
-                  checked={formData["grade"] || ""}
-                  onChange={handleChange}
+                  onChange={(e) => setConfig({ ...config, grade: e.target.value })}
                 >
                   <FormControlLabel
                     value="flutuante"
                     control={<Radio color="primary" />}
                     label="Flutuante"
+                    checked={config.grade === 'flutuante'}
                   />
                   <FormControlLabel
                     value="fixada"
                     control={<Radio color="primary" />}
                     label="Fixada"
+                    checked={config.grade === 'fixada'}
                   />
                   <FormControlLabel
                     value="novatela"
                     control={<Radio color="primary" />}
                     label="Nova Tela"
+                    checked={config.grade === 'novatela'}
                   />
                 </RadioGroup>
               </FormControl>
             </form>
-            <div>
-              You are submitting the following:
-              <ul>
-                {Object.entries(formData).map(([name, value]) => (
-                  <li key={name}>
-                    <strong>{name}</strong>: {value.toString()}
-                  </li>
-                ))}
-              </ul>
-            </div>
           </DialogContentText>
         </DialogContent>
         <DialogActions className={style.spaceBetween}>
           <Button autoFocus onClick={setConfiguracaoPadrao} color="primary">
             Configuração Padrão
           </Button>
-          <Button onClick={handleSubmit} color="primary" autoFocus>
+          <Button onClick={enviarConfiguracoes} color="primary" autoFocus>
             Salvar
           </Button>
         </DialogActions>
